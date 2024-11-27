@@ -40,3 +40,5 @@ CMakeLists.txt.user*
 # VS Code
 .vscode
 .vscode/*
+
+zed-ros-examples/tutorials/build
