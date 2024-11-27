@@ -105,12 +105,20 @@ int main(int argc, char** argv)
    * is the number of messages that will be buffered up before beginning to throw
    * away the oldest ones.
    */
-  ros::Subscriber subImu = n.subscribe("/zed/zed_node/imu/data", 10, imuCallback);
-  ros::Subscriber subImuTemp = n.subscribe("/zed/zed_node/imu/temperature", 10, imuTempCallback);
-  ros::Subscriber subLeftTemp = n.subscribe("/zed/zed_node/temperature/left", 10, leftTempCallback);
-  ros::Subscriber subRightTemp = n.subscribe("/zed/zed_node/temperature/right", 10, rightTempCallback);
-  ros::Subscriber subPress = n.subscribe("/zed/zed_node/atm_press", 10, pressureCallback);
-  ros::Subscriber subMag = n.subscribe("/zed/zed_node/imu/mag", 10, magCallback);
+  // ros::Subscriber subImu = n.subscribe("/zed/zed_node/imu/data", 10, imuCallback);
+  // ros::Subscriber subImuTemp = n.subscribe("/zed/zed_node/imu/temperature", 10, imuTempCallback);
+  // ros::Subscriber subLeftTemp = n.subscribe("/zed/zed_node/temperature/left", 10, leftTempCallback);
+  // ros::Subscriber subRightTemp = n.subscribe("/zed/zed_node/temperature/right", 10, rightTempCallback);
+  // ros::Subscriber subPress = n.subscribe("/zed/zed_node/atm_press", 10, pressureCallback);
+  // ros::Subscriber subMag = n.subscribe("/zed/zed_node/imu/mag", 10, magCallback);
+
+  // 以 zed2 为例：
+  ros::Subscriber subImu = n.subscribe("/zed2/zed_node/imu/data", 10, imuCallback);
+  ros::Subscriber subImuTemp = n.subscribe("/zed2/zed_node/temperature/imu", 10, imuTempCallback);
+  ros::Subscriber subLeftTemp = n.subscribe("/zed2/zed_node/temperature/left", 10, leftTempCallback);
+  ros::Subscriber subRightTemp = n.subscribe("/zed2/zed_node/temperature/right", 10, rightTempCallback);
+  ros::Subscriber subPress = n.subscribe("/zed2/zed_node/atm_press", 10, pressureCallback);
+  ros::Subscriber subMag = n.subscribe("/zed2/zed_node/imu/mag", 10, magCallback);
 
   /**
    * ros::spin() will enter a loop, pumping callbacks.  With this version, all

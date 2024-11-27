@@ -35,8 +35,12 @@
 void objectListCallback(const zed_interfaces::ObjectsStamped::ConstPtr& msg)
 {
   ROS_INFO("***** New object list *****");
-  for (int i = 0; i < msg->objects.size(); i++)
+
+  for (int i = 0; i < msg->objects.size();
+       i++)  // objects 是一个 std::vector 数组，包含了 ZED 相机检测到的每个物体的信息
   {
+    // 这个判断是用来过滤掉标签 ID 为 -1 的物体，通常物体检测系统中如果没有检测到有效物体，label_id 会被设置为
+    // -1。所以如果 label_id 是 -1，表示该物体无效，跳过当前循环。
     if (msg->objects[i].label_id == -1)
       continue;
 
@@ -44,7 +48,11 @@ void objectListCallback(const zed_interfaces::ObjectsStamped::ConstPtr& msg)
                                           << msg->objects[i].position[0] << "," << msg->objects[i].position[1] << ","
                                           << msg->objects[i].position[2] << "] [m]"
                                           << "- Conf. " << msg->objects[i].confidence
-                                          << " - Tracking state: " << static_cast<int>(msg->objects[i].tracking_state));
+                                          << " - Tracking state: " << static_cast<int>(msg->objects[i].tracking_state)); // 物体的跟踪状态，通常是一个枚举值，表示物体是否正在被跟踪，可能的状态包括“跟踪中”、“丢失”等。
+  // 示例输出：
+  // Person [1] - Pos. [1.2, 0.5, 2.0] [m] - Conf. 0.95 - Tracking state: 2
+  // Car [2] - Pos. [3.0, 0.0, 1.0] [m] - Conf. 0.89 - Tracking state: 1
+
   }
 }
 
@@ -87,7 +95,9 @@ int main(int argc, char** argv)
    * is the number of messages that will be buffered up before beginning to throw
    * away the oldest ones.
    */
-  ros::Subscriber subObjList = n.subscribe("objects", 1, objectListCallback);
+
+  // ros::Subscriber subObjList = n.subscribe("objects", 1, objectListCallback);
+  ros::Subscriber subObjList = n.subscribe("/zed2/zed_node/obj_det/objects", 1, objectListCallback);
 
   /**
    * ros::spin() will enter a loop, pumping callbacks.  With this version, all

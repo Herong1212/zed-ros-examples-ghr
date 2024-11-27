@@ -35,65 +35,68 @@
 #include <image_transport/image_transport.h>
 #include <image_transport/subscriber_filter.h>
 
-namespace zed_test_nodelets {
+namespace zed_test_nodelets
+{
 
-class ZEDTestRGBDSync : public nodelet::Nodelet {
-
+class ZEDTestRGBDSync : public nodelet::Nodelet
+{
 public:
-    ZEDTestRGBDSync();
-    virtual ~ZEDTestRGBDSync();
+  ZEDTestRGBDSync();
+  virtual ~ZEDTestRGBDSync();
 
 protected:
-    /*! \brief Initialization function called by the Nodelet base class
-     */
-    virtual void onInit();
+  /*! \brief Initialization function called by the Nodelet base class
+   */
+  virtual void onInit();
 
-    /*! \brief Reads parameters from the param server
-     */
-    void readParameters();
+  /*! \brief Reads parameters from the param server
+   */
+  void readParameters();
 
-    /*! \brief Callback for RGBD topics synchronization
-     */
-    void callbackRGBD(
-            const sensor_msgs::ImageConstPtr& rgb,
-            const sensor_msgs::ImageConstPtr& depth,
-            const sensor_msgs::CameraInfoConstPtr& rgbCameraInfo,
-            const sensor_msgs::CameraInfoConstPtr& depthCameraInfo );
+  /*! \brief Callback for RGBD topics synchronization
+   */
+  void callbackRGBD(const sensor_msgs::ImageConstPtr& rgb, const sensor_msgs::ImageConstPtr& depth,
+                    const sensor_msgs::CameraInfoConstPtr& rgbCameraInfo,
+                    const sensor_msgs::CameraInfoConstPtr& depthCameraInfo);
 
 private:
-    // Node handlers
-    ros::NodeHandle mNh;    // Node handler
-    ros::NodeHandle mNhP;  // Private Node handler
+  // Node handlers
+  ros::NodeHandle mNh;   // Node handler
+  ros::NodeHandle mNhP;  // Private Node handler
 
-    // Publishers
-    image_transport::CameraPublisher mPubSync;
+  // Publishers
+  image_transport::CameraPublisher mPubSync;
 
-    // Subscribers
-    image_transport::SubscriberFilter mSubRgbImage;
-    image_transport::SubscriberFilter mSubDepthImage;
-    message_filters::Subscriber<sensor_msgs::CameraInfo> mSubRgbCamInfo;
-    message_filters::Subscriber<sensor_msgs::CameraInfo> mSubDepthCamInfo;
+  // Subscribers
+  image_transport::SubscriberFilter mSubRgbImage;
+  image_transport::SubscriberFilter mSubDepthImage;
+  message_filters::Subscriber<sensor_msgs::CameraInfo> mSubRgbCamInfo;
+  message_filters::Subscriber<sensor_msgs::CameraInfo> mSubDepthCamInfo;
 
-    // Approx sync policies
-    typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::Image, sensor_msgs::CameraInfo, sensor_msgs::CameraInfo> ApproxRgbdSyncPolicy;
-    message_filters::Synchronizer<ApproxRgbdSyncPolicy>* mApproxRgbdSync = nullptr;
+  // Approx sync policies
+  typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::Image,
+                                                          sensor_msgs::CameraInfo, sensor_msgs::CameraInfo>
+      ApproxRgbdSyncPolicy;
+  message_filters::Synchronizer<ApproxRgbdSyncPolicy>* mApproxRgbdSync = nullptr;
 
-    // Exact sync policies
-    typedef message_filters::sync_policies::ExactTime<sensor_msgs::Image, sensor_msgs::Image, sensor_msgs::CameraInfo, sensor_msgs::CameraInfo> ExactRgbdSyncPolicy;
-    message_filters::Synchronizer<ExactRgbdSyncPolicy>* mExactRgbdSync = nullptr;
+  // Exact sync policies
+  typedef message_filters::sync_policies::ExactTime<sensor_msgs::Image, sensor_msgs::Image, sensor_msgs::CameraInfo,
+                                                    sensor_msgs::CameraInfo>
+      ExactRgbdSyncPolicy;
+  message_filters::Synchronizer<ExactRgbdSyncPolicy>* mExactRgbdSync = nullptr;
 
-    // Params
-    std::string mZedNodeletName = "zed_node";
-    bool mUseApproxSync = true;
-    int mQueueSize = 50;
-    bool mVerbose=false;
-    bool mSaveFrames=false;
-    std::string mSavePath="~/ros_zed_sync_test";
+  // Params
+  std::string mZedNodeletName = "zed_node";
+  bool mUseApproxSync = true;
+  int mQueueSize = 50;
+  bool mVerbose = false;
+  bool mSaveFrames = false;
+  std::string mSavePath = "~/ros_zed_sync_test";
 };
 
-} // namespace zed_test_nodelets
+}  // namespace zed_test_nodelets
 
 #include <pluginlib/class_list_macros.h>
 PLUGINLIB_EXPORT_CLASS(zed_test_nodelets::ZEDTestRGBDSync, nodelet::Nodelet)
 
-#endif // RGBD_TEST_SYNC_HPP
+#endif  // RGBD_TEST_SYNC_HPP

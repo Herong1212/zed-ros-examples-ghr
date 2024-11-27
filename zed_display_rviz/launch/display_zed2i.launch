@@ -17,19 +17,37 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <launch>
-    <arg name="svo_file"             default="" /> <!-- <arg name="svo_file" default="path/to/svo/file.svo"> -->
-    <arg name="stream"               default="" /> <!-- <arg name="stream" default="<ip_address>:<port>"> -->
+    <!-- arg 用于定义启动文件的参数，可在运行时通过命令行传递这些参数的值。如果没有提供参数，则使用 default 指定的默认值 -->
 
-    <arg name="camera_model"         default="zed2i" />
+    <!-- svo_file：用于指定 SVO 文件路径（ZED 相机的录制文件），如果为空，则默认使用实时相机数据 -->
+    <!-- <arg name="svo_file" default="path/to/svo/file.svo"> -->
+    <arg name="svo_file" default="" />
+    <!-- stream：用于指定从网络流（IP 地址和端口）读取数据，而非直接从相机读取 -->
+    <!-- <arg name="stream" default="<ip_address>:<port>"> -->
+    <arg name="stream" default="" />
+
+    <arg name="camera_model" default="zed2i" />
 
     <!-- Launch ZED camera wrapper -->
+    <!-- 使用 <include> 元素，包含 zed_wrapper/launch 下的功能包的相机启动文件 -->
     <include file="$(find zed_wrapper)/launch/$(arg camera_model).launch">
-        <arg name="camera_model"        value="$(arg camera_model)" />
-        <arg name="svo_file"            value="$(arg svo_file)" />
-        <arg name="stream"              value="$(arg stream)" />
+
+        <!-- 嵌套参数传递：将外层定义的 svo_file 和 stream 参数值传递给被包含的 ZED Wrapper 的 launch 文件中 -->
+        <!-- 外层和内层的参数是相互独立的：在外层定义的参数（例如 camera_model）并不会自动传递到被包含的 launch 文件中；如果需要让内层文件使用这些参数，必须通过 <arg> 显式地传递 -->
+        <!-- 内层文件中的参数需要接收值：被包含的 launch 文件可能定义了相同的参数（如 camera_model），但它们的作用范围仅限于该文件；如果外层不传递参数，内层文件会使用自己的默认值，而不是外层提供的值 -->
+        <arg name="camera_model" value="$(arg camera_model)" />
+        <arg name="svo_file" value="$(arg svo_file)" />
+        <arg name="stream" value="$(arg stream)" />
     </include>
 
     <!-- Launch rivz display -->
+    <!-- 在 zed_display_rviz 包中寻找与指定相机型号匹配的配置文件，-d 用于指定要加载的 RViz 配置文件路径 -->
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find zed_display_rviz)/rviz/$(arg camera_model).rviz" output="screen" />
+
+    <!-- 扩展内容：启用物体检测功能 -->
+    <!-- <arg name="object_detection" default="true" />
+    <include file="$(find zed_wrapper)/launch/$(arg camera_model).launch">
+        <arg name="object_detection" value="$(arg object_detection)" />
+    </include> -->
 
 </launch>
