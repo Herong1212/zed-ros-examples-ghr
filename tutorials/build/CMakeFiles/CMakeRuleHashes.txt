@@ -1,2 +1,0 @@
-# Hashes of file build rules.
-0a27de37299f00d26f3525258a9d0b26 zed_depth_sub_tutorial/CMakeFiles/clean_test_results
